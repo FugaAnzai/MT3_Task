@@ -17,25 +17,25 @@ int Function::clamp(int value, int min, int max) {
 }
 
 void Function::LoadCSV(const char* path, int* array) {
-	
+	//一行バッファ
 	std::string line_buff;
-	
+	//一文字バッファ
 	std::string buff;
 
-	
+	//ファイル読み込み
 	std::ifstream read_file(path);
 
 	int i = 0;
 
-	
+	//一行読み取り
 	while (std::getline(read_file, line_buff)) {
 
-		
+		//一行バッファをgetlineに渡せるように変換
 		std::istringstream line(line_buff);
 
-		
+		//,の後の数字読み取り
 		while (std::getline(line, buff, ',')) {
-			array[i] = std::stoi(buff);
+			array[i] = std::stoi(buff);//値をarrayに保存
 			i++;
 		}
 	}
