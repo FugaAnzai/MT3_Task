@@ -48,3 +48,17 @@ void Function::Vector3ScreenPrintf(int x, int y, const Vector3& vector3, const c
 	Novice::ScreenPrintf(x + kColumnWidth * 2, y, "%.02f", vector3.z);
 	Novice::ScreenPrintf(x + kColumnWidth * 3, y, "%s", label);
 }
+
+void Function::MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label) {
+
+	Novice::ScreenPrintf(x, y, label);
+
+	for (int row = 0; row < 4; ++row) {
+		for (int column = 0; column < 4; ++column) {
+			Novice::ScreenPrintf(x + (column * kColumnWidth), y + ((row + 1) * kRowHeight), "%6.02f", matrix.m[row][column]);
+		}
+	}
+
+
+
+}
