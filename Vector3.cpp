@@ -53,3 +53,61 @@ Vector3 Vector3::Normalize(Vector3 v) {
 	result.z = v.z / length;
 	return result;
 }
+
+Vector3 Vector3::operator+() const { return *this; }
+
+Vector3 Vector3::operator-() const { return { -x, -y,-z }; }
+
+Vector3 Vector3::operator+(const Vector3& other) const {
+	return { x + other.x, y + other.y, z + other.z };
+}
+
+Vector3 Vector3::operator-(const Vector3& other) const {
+	return { x - other.x, y - other.y, z - other.z };
+}
+
+Vector3 Vector3::operator*(float s) const {
+	return { x * s, y * s, z * s };
+}
+
+Vector3 Vector3::operator/(float s) const {
+	return { x / s, y / s, z / s };
+}
+
+Vector3& Vector3::operator +=(const Vector3& other) {
+	x += other.x;
+	y += other.y;
+	z += other.z;
+
+	return *this;
+}
+
+Vector3& Vector3::operator-=(const Vector3& other) {
+	x -= other.x;
+	y -= other.y;
+	z -= other.z;
+
+	return *this;
+}
+
+Vector3& Vector3::operator*=(float s) {
+	x *= s;
+	y *= s;
+	z *= s;
+
+	return *this;
+
+}
+
+Vector3& Vector3::operator/=(float s) {
+	x /= s;
+	y /= s;
+	z /= s;
+
+	return *this;
+
+}
+
+inline Vector3 operator*(float s, const Vector3& v) {
+	return { s * v.x, s * v.y, s * v.z };
+}
