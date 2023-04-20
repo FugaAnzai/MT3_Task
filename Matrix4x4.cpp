@@ -308,3 +308,15 @@ Matrix4x4 Matrix4x4::MakeRotateZMatrix(float radian) {
 
 	return result;
 }
+
+Matrix4x4 Matrix4x4::MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
+	Matrix4x4 result;
+	Matrix4x4 scaleMatrix = Matrix4x4::MakeScaleMatrix(scale);
+	Matrix4x4 rotateXMatrix = Matrix4x4::MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = Matrix4x4::MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = Matrix4x4::MakeRotateZMatrix(rotate.z);
+	Matrix4x4 rotateXYZMatrix = Matrix4x4::Multiply(rotateXMatrix, Matrix4x4::Multiply(rotateYMatrix, rotateZMatrix));
+	Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(translate);
+	result = Matrix4x4::Multiply(scaleMatrix, Matrix4x4::Multiply(rotateXYZMatrix, translateMatrix));
+	return result;
+}
