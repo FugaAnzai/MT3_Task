@@ -1,5 +1,6 @@
 #include "Vector3.h"
 #include <math.h>
+#include <assert.h>
 
 Vector3::Vector3() {
 	x = 0;
@@ -54,6 +55,20 @@ Vector3 Vector3::Normalize(Vector3 v) {
 	return result;
 }
 
+Vector3 Vector3::Transform(const Vector3& vector, const Matrix4x4& matrix) {
+	
+	Vector3 result;
+
+	result = vector * matrix;
+	
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1 * matrix.m[3][3];
+	assert(w != 0.0f);
+	result *= 1.0f / w;
+	
+	return result;
+}
+
+
 Vector3 Vector3::operator+() const { return *this; }
 
 Vector3 Vector3::operator-() const { return { -x, -y,-z }; }
@@ -68,6 +83,16 @@ Vector3 Vector3::operator-(const Vector3& other) const {
 
 Vector3 Vector3::operator*(float s) const {
 	return { x * s, y * s, z * s };
+}
+
+Vector3 Vector3::operator*(const Matrix4x4& matrix) const {
+	Vector3 result;
+
+	result.x = x * matrix.m[0][0] + y * matrix.m[1][0] + z * matrix.m[2][0] + 1 * matrix.m[3][0];
+	result.y = x * matrix.m[0][1] + y * matrix.m[1][1] + z * matrix.m[2][1] + 1 * matrix.m[3][1];
+	result.z = x * matrix.m[0][2] + y * matrix.m[1][2] + z * matrix.m[2][2] + 1 * matrix.m[3][2];
+
+	return result;
 }
 
 Vector3 Vector3::operator/(float s) const {
