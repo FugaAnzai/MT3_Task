@@ -109,9 +109,8 @@
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="keyInput.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="Rand.cpp" />
-    <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h" />
@@ -142,6 +141,7 @@
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="keyInput.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Rand.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
