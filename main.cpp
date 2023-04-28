@@ -3,6 +3,7 @@
 #include "Function.h"
 #include "MathUtils.h"
 #include "WinApp.h"
+#include "ImGuiManager.h"
 
 const char kWindowTitle[] = "LD2A_01_アンザイフウガ";
 
@@ -71,6 +72,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			screenVertices[i] = Transform(ndcVertex, viewportMatrix);
 		}
 
+		Vector3 v0v1 = screenVertices[1] - screenVertices[0];
+		Vector3 v1v2 = screenVertices[2] - screenVertices[1];
+
+		Vector3 triangleCross = Cross(v1v2,v0v1);
+
+		float cullingDot = Dot(cameraPosition, triangleCross);
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -79,8 +87,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y), int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
-		Function::Vector3ScreenPrintf(0, 0, cross, "Cross");
+		if (cullingDot <= 0) {
+			Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y), int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
+
+		}
+		
+		ImGui::Begin("Debug");
+		ImGui::InputFloat("Dot", &rotate.y);
+		ImGui::End();
 
 		///
 		/// ↑描画処理ここまで
