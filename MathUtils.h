@@ -73,8 +73,7 @@ inline Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 
 	result = vector * matrix;
 
-	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] +
-	          1 * matrix.m[3][3];
+	float w = (vector.x * matrix.m[0][3]) + (vector.y * matrix.m[1][3]) + (vector.z * matrix.m[2][3]) + (1 * matrix.m[3][3]);
 	assert(w != 0.0f);
 	result *= 1.0f / w;
 
@@ -88,6 +87,10 @@ inline Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix) {
 	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2];
 
 	return result;
+}
+
+inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
+	return{ v1.y * v2.z - v1.z * v2.y,v1.z * v2.x - v1.x * v2.z,v1.x * v2.y - v1.y * v2.x };
 }
 
 /// Matrix4x4関連の関数
