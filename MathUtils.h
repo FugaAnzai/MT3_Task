@@ -4,7 +4,9 @@
 #include "Vector4.h"
 #include "Matrix4x4.h"
 #include <assert.h>
+#define _USE_MATH_DEFINES
 #include <cmath>
+#include "Sphere.h"
 
 /// Vector3関連の関数
 
@@ -88,7 +90,6 @@ inline Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix) {
 
 	return result;
 }
-
 inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
 	return{ v1.y * v2.z - v1.z * v2.y,v1.z * v2.x - v1.x * v2.z,v1.x * v2.y - v1.y * v2.x };
 }
@@ -359,3 +360,8 @@ inline Matrix4x4 MakeViewportMatrix(float left, float top, float width, float he
 
 	return result;
 }
+
+///描画系
+
+void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
+void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);

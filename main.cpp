@@ -13,19 +13,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Vector3 v1{ 1.2f,-3.9f,2.5f };
-	Vector3 v2{ 2.8f,0.4f,-1.3f };
-	Vector3 cross = Cross(v1, v2);
+	Sphere sphere{};
+	sphere.radius = 1;
+	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
+	Vector3 cameraRotation{};
 
-	//三角形関連の変数
-	Vector3 rotate{};
-	Vector3 translate{};
-	Vector3 cameraPosition{0.0f,0.0f,-5.0f};
-	Vector3 kLocalVertice[3]{
-		{0.0f,0.3f,0.0f},
-		{-0.3f,-0.3f,0.0f},
-		{0.3f,-0.3f,0.0f}
-	};
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -39,45 +31,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		const float moveSpeed = 0.1f;
-
-		if (PressKey(DIK_W)) {
-			translate.z += moveSpeed;
-		}
-
-		if (PressKey(DIK_S)) {
-			translate.z -= moveSpeed;
-		}
-
-		if (PressKey(DIK_A)) {
-			translate.x -= moveSpeed;
-		}
-
-		if (PressKey(DIK_D)) {	
-			translate.x += moveSpeed;	
-		}
-
-		rotate.y += moveSpeed;
-
-		Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
-		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
+		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotation, cameraPosition);
 		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
-		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, (float(WinApp::kWindowWidth) / float(WinApp::kWindowHeight)), 0.1f, 100.0f);
-		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(3.141592f / 4, (float(WinApp::kWindowWidth) / float(WinApp::kWindowHeight)), 0.1f, 100.0f);
+		Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix, projectionMatrix);
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(WinApp::kWindowWidth), float(WinApp::kWindowHeight), 0.0f, 1.0f);
-
-		Vector3 screenVertices[3];
-		for (uint32_t i = 0; i < 3; ++i) {
-			Vector3 ndcVertex = Transform(kLocalVertice[i], worldViewProjectionMatrix);
-			screenVertices[i] = Transform(ndcVertex, viewportMatrix);
-		}
-
-		Vector3 v0v1 = screenVertices[1] - screenVertices[0];
-		Vector3 v1v2 = screenVertices[2] - screenVertices[1];
-
-		Vector3 triangleCross = Cross(v1v2,v0v1);
-
-		float cullingDot = Dot(cameraPosition, triangleCross);
 
 		///
 		/// ↑更新処理ここまで
@@ -87,14 +45,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		if (cullingDot <= 0) {
-			Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y), int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
-
-		}
-		
-		ImGui::Begin("Debug");
-		ImGui::InputFloat("Dot", &rotate.y);
+		ImGui::Begin("Camera");
+		ImGui::SliderFloat3("position", &cameraPosition.x, -10, 10);
+		ImGui::SliderFloat3("rotation", &cameraRotation.x, 0, 2 * (float)M_PI);
 		ImGui::End();
+
+		DrawGrid(viewProjectionMatrix, viewportMatrix);
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, BLACK);
 
 		///
 		/// ↑描画処理ここまで
