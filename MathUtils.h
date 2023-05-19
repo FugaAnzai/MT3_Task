@@ -8,6 +8,21 @@
 #include <cmath>
 #include "Sphere.h"
 
+struct Line {
+	Vector3 origin;
+	Vector3 diff;
+};
+
+struct Ray {
+	Vector3 origin;
+	Vector3 diff;
+};
+
+struct Segment {
+	Vector3 origin;
+	Vector3 diff;
+};
+
 /// Vector3関連の関数
 
 inline Vector3 Add(const Vector3& v1, const Vector3& v2) { 
@@ -92,6 +107,12 @@ inline Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix) {
 }
 inline Vector3 Cross(const Vector3& v1, const Vector3& v2) {
 	return{ v1.y * v2.z - v1.z * v2.y,v1.z * v2.x - v1.x * v2.z,v1.x * v2.y - v1.y * v2.x };
+}
+inline Vector3 Project(const Vector3& v1, const Vector3& v2) {
+	return{ (Dot(v1,Normalize(v2))) * Normalize(v2) };
+}
+inline Vector3 ClosestPoint(const Vector3& point, const Segment& segment) {
+	return{ segment.origin + Project(Subtract(point, segment.origin), segment.diff) };
 }
 
 /// Matrix4x4関連の関数

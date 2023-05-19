@@ -177,9 +177,9 @@ void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, con
 		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {
 			float lon = lonIndex * kLonEvery;
 			Vector3 a, b, c;
-			a = sphere.radius * Vector3{ std::cos(lat) * std::cos(lon),std::sin(lat),std::cos(lat) * std::sin(lon) };
-			b = sphere.radius * Vector3{ std::cos(lat + theta) * std::cos(lon),std::sin(lat + theta),std::cos(lat + theta) * std::sin(lon) };
-			c = sphere.radius * Vector3{ std::cos(lat) * std::cos(lon + phi),std::sin(lat),std::cos(lat) * std::sin(lon + phi) };
+			a = sphere.center + (sphere.radius * Vector3{ std::cos(lat) * std::cos(lon),std::sin(lat),std::cos(lat) * std::sin(lon) });
+			b = sphere.center + (sphere.radius * Vector3{ std::cos(lat + theta) * std::cos(lon),std::sin(lat + theta),std::cos(lat + theta) * std::sin(lon) });
+			c = sphere.center + (sphere.radius * Vector3{ std::cos(lat) * std::cos(lon + phi),std::sin(lat),std::cos(lat) * std::sin(lon + phi) });
 
 			Vector3 ncdA, ncdB, ncdC;
 			ncdA = Transform(a, viewProjectionMatrix);
