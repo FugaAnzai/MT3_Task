@@ -4,6 +4,7 @@
 #include "MathUtils.h"
 #include "WinApp.h"
 #include "ImGuiManager.h"
+#include "Collision.h"
 
 const char kWindowTitle[] = "LD2A_01_アンザイフウガ";
 
@@ -13,13 +14,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Segment segment = { {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
-	Vector3 point = { -1.5f,0.6f,0.6f };
-	Vector3 project = Project(Subtract(point, segment.origin), segment.diff);
-	Vector3 closestPoint = ClosestPoint(point, segment);
-
-	Sphere pointSphere{point,0.01f};
-	Sphere closestPointSphere{ closestPoint,0.01f };
+	Sphere sphere1{Vector3(2,0,0),1.0f};
+	Sphere sphere2{Vector3(0,0,0),1.0f};
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
 
@@ -42,9 +38,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix, projectionMatrix);
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(WinApp::kWindowWidth), float(WinApp::kWindowHeight), 0.0f, 1.0f);
 
-		Vector3 start = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
-		Vector3 end = Transform(Transform(Add(segment.origin,segment.diff), viewProjectionMatrix), viewportMatrix);
-
 		///
 		/// ↑更新処理ここまで
 		///
@@ -58,13 +51,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::SliderFloat3("rotation", &cameraRotation.x, 0, 2 * (float)M_PI);
 		ImGui::End();
 
-		ImGui::InputFloat3("Project", &project.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::Begin("sphere");
+		ImGui::SliderFloat3("center", &sphere1.center.x, -10, 10);
+		ImGui::SliderFloat("radius", &sphere1.radius, -10, 10);
+		ImGui::End();
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawSphere(pointSphere, viewProjectionMatrix, viewportMatrix, RED);
-		DrawSphere(closestPointSphere, viewProjectionMatrix, viewportMatrix, BLACK);
-
-		Novice::DrawLine((int)start.x, (int)start.y, (int)end.x, (int)end.y, WHITE);
+		if (IsCollision(sphere1, sphere2)) {
+			DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, RED);
+		}
+		else {
+			DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, WHITE);
+		}
+		
+		
+		DrawSphere(sphere2, viewProjectionMatrix, viewportMatrix, WHITE);
 
 		
 
