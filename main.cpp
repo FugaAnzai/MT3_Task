@@ -14,8 +14,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Sphere sphere1{Vector3(2,0,0),1.0f};
-	Sphere sphere2{Vector3(0,0,0),1.0f};
+	Sphere sphere1{Vector3(0,0,0),1.0f};
+	Plane plane{ Vector3(0,1,0),0.5f };
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
 
@@ -56,17 +56,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::SliderFloat("radius", &sphere1.radius, -10, 10);
 		ImGui::End();
 
+		ImGui::Begin("Plane");
+		ImGui::DragFloat3("normal", &plane.normal.x, 0.01f);
+		ImGui::End();
+
+		plane.normal = Normalize(plane.normal);
+
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		if (IsCollision(sphere1, sphere2)) {
+
+		if (IsCollision(sphere1, plane)) {
 			DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, RED);
+			DrawPlane(plane, viewProjectionMatrix, viewportMatrix, RED);
 		}
 		else {
 			DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, WHITE);
+			DrawPlane(plane, viewProjectionMatrix, viewportMatrix, WHITE);
 		}
-		
-		
-		DrawSphere(sphere2, viewProjectionMatrix, viewportMatrix, WHITE);
-
 		
 
 		///

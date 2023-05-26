@@ -23,6 +23,11 @@ struct Segment {
 	Vector3 diff;
 };
 
+struct Plane {
+	Vector3 normal;
+	float distance;
+};
+
 /// Vector3関連の関数
 
 inline Vector3 Add(const Vector3& v1, const Vector3& v2) { 
@@ -113,6 +118,14 @@ inline Vector3 Project(const Vector3& v1, const Vector3& v2) {
 }
 inline Vector3 ClosestPoint(const Vector3& point, const Segment& segment) {
 	return{ segment.origin + Project(Subtract(point, segment.origin), segment.diff) };
+}
+inline Vector3 Perpendicular(const Vector3& vector) {
+	if (vector.x != 0.0f || vector.y != 0.0f) {
+		return { -vector.y,vector.x,0.0f };
+
+	}
+
+	return { 0.0f,-vector.z,vector.y };
 }
 
 /// Matrix4x4関連の関数
@@ -386,3 +399,4 @@ inline Matrix4x4 MakeViewportMatrix(float left, float top, float width, float he
 
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
