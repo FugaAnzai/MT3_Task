@@ -226,3 +226,16 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 	Novice::DrawLine((int)points[3].x, (int)points[3].y, (int)points[0].x, (int)points[0].y, color);
 
 }
+
+void DrawSegment(const Segment& segment, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+
+	Vector3 ncdA = Transform(segment.origin, viewProjectionMatrix);
+	Vector3 ncdB = Transform(segment.origin + segment.diff, viewProjectionMatrix);
+
+	Vector3 screenA = Transform(ncdA, viewportMatrix);
+	Vector3 screenB = Transform(ncdB, viewportMatrix);
+
+	Novice::DrawLine((int)screenA.x, (int)screenA.y, (int)screenB.x, (int)screenB.y, color);
+
+}

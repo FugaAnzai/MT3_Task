@@ -19,3 +19,51 @@ bool IsCollision(const Sphere& sphere, const Plane& plane)
 
     return false;
 }
+
+bool IsCollision(const Line& line, const Plane& plane)
+{
+    float dot = Dot(line.diff, plane.normal);
+
+    if (dot == 0.0f) {
+        return false;
+    }
+
+    //float t = (plane.distance - (Dot(line.origin, plane.normal))) / dot;
+
+    return true;
+}
+
+bool IsCollision(const Ray& ray, const Plane& plane) {
+
+    float dot = Dot(ray.diff, plane.normal);
+
+    if (dot == 0.0f) {
+        return false;
+    }
+
+    float t = (plane.distance - (Dot(ray.origin, plane.normal))) / dot;
+
+    if (t >= 0) {
+        return true;
+    }
+
+    return false;
+
+}
+
+bool IsCollision(const Segment& segment, const Plane& plane) {
+
+    float dot = Dot(segment.diff, plane.normal);
+
+    if (dot == 0.0f) {
+        return false;
+    }
+
+    float t = (plane.distance - (Dot(segment.origin, plane.normal))) / dot;
+
+    if (t >= 0 && t <= 1) {
+        return true;
+    }
+
+    return false;
+}

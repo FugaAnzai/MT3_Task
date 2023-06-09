@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Sphere sphere1{Vector3(0,0,0),1.0f};
+	Segment segment{ Vector3(0,0,0),Vector3(0,5,0) };
 	Plane plane{ Vector3(0,1,0),0.5f };
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
@@ -51,9 +51,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::SliderFloat3("rotation", &cameraRotation.x, 0, 2 * (float)M_PI);
 		ImGui::End();
 
-		ImGui::Begin("sphere");
-		ImGui::SliderFloat3("center", &sphere1.center.x, -10, 10);
-		ImGui::SliderFloat("radius", &sphere1.radius, -10, 10);
+		ImGui::Begin("segment");
+		ImGui::SliderFloat3("origin", &segment.origin.x, -10, 10);
+		ImGui::SliderFloat3("diff", &segment.diff.x, -10, 10);
 		ImGui::End();
 
 		ImGui::Begin("Plane");
@@ -64,12 +64,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		if (IsCollision(sphere1, plane)) {
-			DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, RED);
+		if (IsCollision(segment, plane)) {
+			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, RED);
 			DrawPlane(plane, viewProjectionMatrix, viewportMatrix, RED);
 		}
 		else {
-			DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, WHITE);
+			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
 			DrawPlane(plane, viewProjectionMatrix, viewportMatrix, WHITE);
 		}
 		
