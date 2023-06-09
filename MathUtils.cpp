@@ -239,3 +239,18 @@ void DrawSegment(const Segment& segment, const Matrix4x4& viewProjectionMatrix, 
 	Novice::DrawLine((int)screenA.x, (int)screenA.y, (int)screenB.x, (int)screenB.y, color);
 
 }
+
+void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+
+	Vector3 ncdVertices0 = Transform(triangle.vertices[0], viewProjectionMatrix);
+	Vector3 ncdVertices1 = Transform(triangle.vertices[1], viewProjectionMatrix);
+	Vector3 ncdVertices2 = Transform(triangle.vertices[2], viewProjectionMatrix);
+
+	Vector3 screenVertices0 = Transform(ncdVertices0, viewportMatrix);
+	Vector3 screenVertices1 = Transform(ncdVertices1, viewportMatrix);
+	Vector3 screenVertices2 = Transform(ncdVertices2, viewportMatrix);
+
+	Novice::DrawTriangle((int)screenVertices0.x, (int)screenVertices0.y, (int)screenVertices1.x, (int)screenVertices1.y, (int)screenVertices2.x, (int)screenVertices2.y, color, kFillModeWireFrame);
+
+}

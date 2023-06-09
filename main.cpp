@@ -14,8 +14,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Segment segment{ Vector3(0,0,0),Vector3(0,5,0) };
-	Plane plane{ Vector3(0,1,0),0.5f };
+	Segment segment{ Vector3(0,-2,0),Vector3(0,5,0) };
+	Triangle triangle{ Vector3(0,3,0),Vector3(-3,0,0),Vector3(3,0,0)};
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
 
@@ -56,21 +56,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::SliderFloat3("diff", &segment.diff.x, -10, 10);
 		ImGui::End();
 
-		ImGui::Begin("Plane");
-		ImGui::DragFloat3("normal", &plane.normal.x, 0.01f);
-		ImGui::End();
-
-		plane.normal = Normalize(plane.normal);
-
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		if (IsCollision(segment, plane)) {
+		if (IsCollision(triangle, segment)) {
 			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, RED);
-			DrawPlane(plane, viewProjectionMatrix, viewportMatrix, RED);
+			DrawTriangle(triangle, viewProjectionMatrix, viewportMatrix, RED);
 		}
 		else {
 			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
-			DrawPlane(plane, viewProjectionMatrix, viewportMatrix, WHITE);
+			DrawTriangle(triangle, viewProjectionMatrix, viewportMatrix, WHITE);
 		}
 		
 

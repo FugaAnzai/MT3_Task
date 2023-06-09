@@ -67,3 +67,37 @@ bool IsCollision(const Segment& segment, const Plane& plane) {
 
     return false;
 }
+
+bool IsCollision(const Triangle& triangle, const Segment& segment)
+{
+    Vector3 v01 = triangle.vertices[1] - triangle.vertices[0];
+    Vector3 v12 = triangle.vertices[2] - triangle.vertices[1];
+    Vector3 v20 = triangle.vertices[0] - triangle.vertices[2];
+    Plane plane;
+
+    plane.normal = Cross(v01, v12);
+    plane.distance = Dot(triangle.vertices[0], plane.normal);
+
+    if (IsCollision(segment, plane)) {
+        float dot = Dot(segment.diff, plane.normal);
+        float t = (plane.distance - (Dot(segment.origin, plane.normal))) / dot;
+        Vector3 p = segment.origin + (t * segment.diff);
+
+        Vector3 v1p = p - triangle.vertices[1];
+        Vector3 v2p = p - triangle.vertices[2];
+        Vector3 v0p = p - triangle.vertices[0];
+
+        Vector3 cross01 = Cross(v01, v1p);
+        Vector3 cross12 = Cross(v12, v2p);
+        Vector3 cross20 = Cross(v20, v0p);
+
+        if (Dot(cross01, plane.normal) >= 0.0f &&
+            Dot(cross12, plane.normal) >= 0.0f &&
+            Dot(cross20, plane.normal) >= 0.0f) {
+            return true;
+        }
+
+    }
+
+    return false;
+}
