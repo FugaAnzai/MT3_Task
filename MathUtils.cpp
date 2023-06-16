@@ -254,3 +254,50 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 	Novice::DrawTriangle((int)screenVertices0.x, (int)screenVertices0.y, (int)screenVertices1.x, (int)screenVertices1.y, (int)screenVertices2.x, (int)screenVertices2.y, color, kFillModeWireFrame);
 
 }
+
+void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	Vector3 vertices[8];
+	Vector3 ncdVertices[8];
+	Vector3 screenVertices[8];
+
+	vertices[0] = { aabb.min.x,aabb.max.y,aabb.min.z };
+	vertices[1] = { aabb.max.x,aabb.max.y,aabb.min.z };
+	vertices[2] = { aabb.max.x,aabb.min.y,aabb.min.z };
+	vertices[3] = { aabb.min.x,aabb.min.y,aabb.min.z };
+	vertices[4] = { aabb.min.x,aabb.max.y,aabb.max.z };
+	vertices[5] = { aabb.max.x,aabb.max.y,aabb.max.z };
+	vertices[6] = { aabb.max.x,aabb.min.y,aabb.max.z };
+	vertices[7] = { aabb.min.x,aabb.min.y,aabb.max.z };
+
+	ncdVertices[0] = Transform(vertices[0], viewProjectionMatrix);
+	ncdVertices[1] = Transform(vertices[1], viewProjectionMatrix);
+	ncdVertices[2] = Transform(vertices[2], viewProjectionMatrix);
+	ncdVertices[3] = Transform(vertices[3], viewProjectionMatrix);
+	ncdVertices[4] = Transform(vertices[4], viewProjectionMatrix);
+	ncdVertices[5] = Transform(vertices[5], viewProjectionMatrix);
+	ncdVertices[6] = Transform(vertices[6], viewProjectionMatrix);
+	ncdVertices[7] = Transform(vertices[7], viewProjectionMatrix);
+
+	screenVertices[0] = Transform(ncdVertices[0], viewportMatrix);
+	screenVertices[1] = Transform(ncdVertices[1], viewportMatrix);
+	screenVertices[2] = Transform(ncdVertices[2], viewportMatrix);
+	screenVertices[3] = Transform(ncdVertices[3], viewportMatrix);
+	screenVertices[4] = Transform(ncdVertices[4], viewportMatrix);
+	screenVertices[5] = Transform(ncdVertices[5], viewportMatrix);
+	screenVertices[6] = Transform(ncdVertices[6], viewportMatrix);
+	screenVertices[7] = Transform(ncdVertices[7], viewportMatrix);
+
+	Novice::DrawLine((int)screenVertices[0].x, (int)screenVertices[0].y, (int)screenVertices[1].x, (int)screenVertices[1].y, color);
+	Novice::DrawLine((int)screenVertices[1].x, (int)screenVertices[1].y, (int)screenVertices[2].x, (int)screenVertices[2].y, color);
+	Novice::DrawLine((int)screenVertices[2].x, (int)screenVertices[2].y, (int)screenVertices[3].x, (int)screenVertices[3].y, color);
+	Novice::DrawLine((int)screenVertices[3].x, (int)screenVertices[3].y, (int)screenVertices[0].x, (int)screenVertices[0].y, color);
+	Novice::DrawLine((int)screenVertices[4].x, (int)screenVertices[4].y, (int)screenVertices[5].x, (int)screenVertices[5].y, color);
+	Novice::DrawLine((int)screenVertices[5].x, (int)screenVertices[5].y, (int)screenVertices[6].x, (int)screenVertices[6].y, color);
+	Novice::DrawLine((int)screenVertices[6].x, (int)screenVertices[6].y, (int)screenVertices[7].x, (int)screenVertices[7].y, color);
+	Novice::DrawLine((int)screenVertices[7].x, (int)screenVertices[7].y, (int)screenVertices[4].x, (int)screenVertices[4].y, color);
+	Novice::DrawLine((int)screenVertices[0].x, (int)screenVertices[0].y, (int)screenVertices[4].x, (int)screenVertices[4].y, color);
+	Novice::DrawLine((int)screenVertices[1].x, (int)screenVertices[1].y, (int)screenVertices[5].x, (int)screenVertices[5].y, color);
+	Novice::DrawLine((int)screenVertices[2].x, (int)screenVertices[2].y, (int)screenVertices[6].x, (int)screenVertices[6].y, color);
+	Novice::DrawLine((int)screenVertices[3].x, (int)screenVertices[3].y, (int)screenVertices[7].x, (int)screenVertices[7].y, color);
+}

@@ -14,8 +14,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Segment segment{ Vector3(0,-2,0),Vector3(0,5,0) };
-	Triangle triangle{ Vector3(0,3,0),Vector3(-3,0,0),Vector3(3,0,0)};
+	AABB aabb1 = {
+
+		{-0.5f,-0.5f,-0.5f},
+		{0.0f,0.0f,0.0f}
+
+	};
+
+	AABB aabb2 = {
+
+		{0.2f,0.2f,0.2f},
+		{1.0f,1.0f,1.0f}
+
+	};
+
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
 
@@ -38,6 +50,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix, projectionMatrix);
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(WinApp::kWindowWidth), float(WinApp::kWindowHeight), 0.0f, 1.0f);
 
+		ImGui::Begin("Camera");
+		ImGui::SliderFloat3("position", &cameraPosition.x, -10, 10);
+		ImGui::SliderFloat3("rotation", &cameraRotation.x, 0, 2 * (float)M_PI);
+		ImGui::End();
+
+		ImGui::Begin("aabb1");
+		ImGui::SliderFloat3("min", &aabb1.min.x, -10, 10);
+		ImGui::SliderFloat3("max", &aabb1.max.x, -10, 10);
+		ImGui::End();
+
+		aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
+		aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
+		aabb1.min.y = (std::min)(aabb1.min.y, aabb1.max.y);
+		aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
+		aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
+		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
+
+		aabb2.min.x = (std::min)(aabb2.min.x, aabb2.max.x);
+		aabb2.max.x = (std::max)(aabb2.min.x, aabb2.max.x);
+		aabb2.min.y = (std::min)(aabb2.min.y, aabb2.max.y);
+		aabb2.max.y = (std::max)(aabb2.min.y, aabb2.max.y);
+		aabb2.min.z = (std::min)(aabb2.min.z, aabb2.max.z);
+		aabb2.max.z = (std::max)(aabb2.min.z, aabb2.max.z);
+
+		ImGui::Begin("aabb2");
+		ImGui::SliderFloat3("min", &aabb2.min.x, -10, 10);
+		ImGui::SliderFloat3("max", &aabb2.max.x, -10, 10);
+		ImGui::End();
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -46,25 +87,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		ImGui::Begin("Camera");
-		ImGui::SliderFloat3("position", &cameraPosition.x, -10, 10);
-		ImGui::SliderFloat3("rotation", &cameraRotation.x, 0, 2 * (float)M_PI);
-		ImGui::End();
-
-		ImGui::Begin("segment");
-		ImGui::SliderFloat3("origin", &segment.origin.x, -10, 10);
-		ImGui::SliderFloat3("diff", &segment.diff.x, -10, 10);
-		ImGui::End();
-
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		if (IsCollision(triangle, segment)) {
-			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, RED);
-			DrawTriangle(triangle, viewProjectionMatrix, viewportMatrix, RED);
+		if (IsCollision(aabb1, aabb2)) {
+			DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, RED);
+			DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, RED);
 		}
 		else {
-			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
-			DrawTriangle(triangle, viewProjectionMatrix, viewportMatrix, WHITE);
+			DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, WHITE);
+			DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, WHITE);
 		}
 		
 
