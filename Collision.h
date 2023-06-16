@@ -8,3 +8,4 @@ bool IsCollision(const Ray& ray, const Plane& plane);
 bool IsCollision(const Segment& segment, const Plane& plane);
 bool IsCollision(const Triangle& triangle, const Segment& segment);
 bool IsCollision(const AABB& a, const AABB& b);
+bool IsCollision(const AABB& aabb, const Sphere& sphere);

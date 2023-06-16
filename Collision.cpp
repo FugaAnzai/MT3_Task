@@ -1,4 +1,5 @@
 #include "Collision.h"
+#include <algorithm>
 
 bool IsCollision(const Sphere& s1, const Sphere& s2)
 {
@@ -104,7 +105,6 @@ bool IsCollision(const Triangle& triangle, const Segment& segment)
 
 bool IsCollision(const AABB& a, const AABB& b)
 {
-
     if ((a.min.x <= b.max.x && a.max.x >= b.min.x) &&
         (a.min.y <= b.max.y && a.max.y >= b.min.y) &&
         (a.min.z <= b.max.z && a.max.z >= b.min.z)) {
@@ -112,4 +112,21 @@ bool IsCollision(const AABB& a, const AABB& b)
     }
 
     return false;
+}
+
+bool IsCollision(const AABB& aabb, const Sphere& sphere) {
+    
+    Vector3 closestPoint{ std::clamp(sphere.center.x,aabb.min.x,aabb.max.x),
+        std::clamp(sphere.center.y,aabb.min.y,aabb.max.y),
+        std::clamp(sphere.center.z,aabb.min.z,aabb.max.z)
+    };
+
+    float distance = Length(closestPoint - sphere.center);
+
+    if (distance <= sphere.radius) {
+        return true;
+    }
+
+    return false;
+    
 }
