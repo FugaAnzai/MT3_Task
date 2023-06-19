@@ -21,12 +21,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	};
 
-	AABB aabb2 = {
-
-		{0.2f,0.2f,0.2f},
-		{1.0f,1.0f,1.0f}
-
-	};
+	Segment segment = { {0.0f,0.0f,0.0f},{-0.1f,0.0f,0.0f} };
 
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
@@ -51,18 +46,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(WinApp::kWindowWidth), float(WinApp::kWindowHeight), 0.0f, 1.0f);
 
 		ImGui::Begin("Camera");
-		ImGui::SliderFloat3("position", &cameraPosition.x, -10, 10);
-		ImGui::SliderFloat3("rotation", &cameraRotation.x, 0, 2 * (float)M_PI);
+		ImGui::DragFloat3("position", &cameraPosition.x, 0.01f, -10, 10);
+		ImGui::DragFloat3("rotation", &cameraRotation.x, 0.01f,(float) - M_PI, (float)M_PI);
 		ImGui::End();
 
 		ImGui::Begin("aabb1");
-		ImGui::SliderFloat3("min", &aabb1.min.x, -10, 10);
-		ImGui::SliderFloat3("max", &aabb1.max.x, -10, 10);
+		ImGui::DragFloat3("min", &aabb1.min.x, 0.01f, -10, 10);
+		ImGui::DragFloat3("max", &aabb1.max.x, 0.01f, -10, 10);
 		ImGui::End();
 
-		ImGui::Begin("aabb2");
-		ImGui::SliderFloat3("min", &aabb2.min.x, -10, 10);
-		ImGui::SliderFloat3("max", &aabb2.max.x, -10, 10);
+		ImGui::Begin("segment");
+		ImGui::DragFloat3("origin", &segment.origin.x, 0.01f, -10,10);
+		ImGui::DragFloat3("diff", &segment.diff.x, 0.01f, -10, 10);
 		ImGui::End();
 
 		aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
@@ -71,13 +66,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
 		aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
 		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
-
-		aabb2.min.x = (std::min)(aabb2.min.x, aabb2.max.x);
-		aabb2.max.x = (std::max)(aabb2.min.x, aabb2.max.x);
-		aabb2.min.y = (std::min)(aabb2.min.y, aabb2.max.y);
-		aabb2.max.y = (std::max)(aabb2.min.y, aabb2.max.y);
-		aabb2.min.z = (std::min)(aabb2.min.z, aabb2.max.z);
-		aabb2.max.z = (std::max)(aabb2.min.z, aabb2.max.z);
 
 		///
 		/// ↑更新処理ここまで
@@ -89,13 +77,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		if (IsCollision(aabb1, aabb2)) {
+		if (IsCollision(aabb1, segment)) {
 			DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, RED);
-			DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, RED);
+			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, RED);
 		}
 		else {
 			DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, WHITE);
-			DrawAABB(aabb2, viewProjectionMatrix, viewportMatrix, WHITE);
+			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
 		}
 
 

@@ -1,5 +1,6 @@
 #include "Collision.h"
 #include <algorithm>
+#include <ImGuiManager.h>
 
 bool IsCollision(const Sphere& s1, const Sphere& s2)
 {
@@ -129,4 +130,37 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere) {
 
     return false;
     
+}
+
+bool IsCollision(const AABB& aabb, const Segment& segment)
+{
+    float tXmin = (aabb.min.x - segment.origin.x) / segment.diff.x;
+    float tXmax = (aabb.max.x - segment.origin.x) / segment.diff.x;
+    float tYmin = (aabb.min.y - segment.origin.y) / segment.diff.y;
+    float tYmax = (aabb.max.y - segment.origin.y) / segment.diff.y;
+    float tZmin = (aabb.min.z - segment.origin.z) / segment.diff.z;
+    float tZmax = (aabb.max.z - segment.origin.z) / segment.diff.z;
+
+    float tNearX = (std::min)(tXmin, tXmax);
+    float tFarX = (std::max)(tXmin, tXmax);
+    float tNearY = (std::min)(tYmin, tYmax);
+    float tFarY = (std::max)(tYmin, tYmax);
+    float tNearZ = (std::min)(tZmin, tZmax);
+    float tFarZ = (std::max)(tZmin, tZmax);
+
+    float tmin = (std::max)((std::max)(tNearX, tNearY), tNearZ);
+    float tmax = (std::min)((std::min)(tFarX, tFarY), tFarZ);
+
+    ImGui::Begin("t");
+    ImGui::InputFloat("tmin", &tmin);
+    ImGui::InputFloat("tmax", &tmax);
+    ImGui::End();
+
+    if (tmin < tmax) {
+        
+        if((tmin > 1.0f && tmax > 1.0f) || (tmax < 0.0f && tmin < 0.0f)){return false;}
+        return true;
+    }
+
+    return false;
 }
