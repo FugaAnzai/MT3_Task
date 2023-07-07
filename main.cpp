@@ -14,14 +14,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	AABB aabb1 = {
-
-		{-0.5f,-0.5f,-0.5f},
-		{0.0f,0.0f,0.0f}
-
+	Vector3 controlPoint[3] = {
+		{-0.8f,0.58f,1.0f},
+		{1.76f,1.0f,-0.3f},
+		{0.94f,-0.7f,2.3f},
 	};
-
-	Segment segment = { {0.0f,0.0f,0.0f},{-0.1f,0.0f,0.0f} };
 
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
@@ -50,22 +47,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("rotation", &cameraRotation.x, 0.01f,(float) - M_PI, (float)M_PI);
 		ImGui::End();
 
-		ImGui::Begin("aabb1");
-		ImGui::DragFloat3("min", &aabb1.min.x, 0.01f, -10, 10);
-		ImGui::DragFloat3("max", &aabb1.max.x, 0.01f, -10, 10);
+		ImGui::Begin("ControlPoint");
+		ImGui::DragFloat3("controlPoint0", &controlPoint[0].x, 0.01f, -10, 10);
+		ImGui::DragFloat3("controlPoint1", &controlPoint[1].x, 0.01f, -10, 10);
+		ImGui::DragFloat3("controlPoint2", &controlPoint[2].x, 0.01f, -10, 10);
 		ImGui::End();
-
-		ImGui::Begin("segment");
-		ImGui::DragFloat3("origin", &segment.origin.x, 0.01f, -10,10);
-		ImGui::DragFloat3("diff", &segment.diff.x, 0.01f, -10, 10);
-		ImGui::End();
-
-		aabb1.min.x = (std::min)(aabb1.min.x, aabb1.max.x);
-		aabb1.max.x = (std::max)(aabb1.min.x, aabb1.max.x);
-		aabb1.min.y = (std::min)(aabb1.min.y, aabb1.max.y);
-		aabb1.max.y = (std::max)(aabb1.min.y, aabb1.max.y);
-		aabb1.min.z = (std::min)(aabb1.min.z, aabb1.max.z);
-		aabb1.max.z = (std::max)(aabb1.min.z, aabb1.max.z);
 
 		///
 		/// ↑更新処理ここまで
@@ -76,16 +62,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-
-		if (IsCollision(aabb1, segment)) {
-			DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, RED);
-			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, RED);
-		}
-		else {
-			DrawAABB(aabb1, viewProjectionMatrix, viewportMatrix, WHITE);
-			DrawSegment(segment, viewProjectionMatrix, viewportMatrix, WHITE);
-		}
-
+		DrawBezier(controlPoint[0], controlPoint[1], controlPoint[2], viewProjectionMatrix, viewportMatrix,BLUE);
 
 		///
 		/// ↑描画処理ここまで

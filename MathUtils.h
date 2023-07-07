@@ -136,6 +136,13 @@ inline Vector3 Perpendicular(const Vector3& vector) {
 
 	return { 0.0f,-vector.z,vector.y };
 }
+inline Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
+	Vector3 result;
+	result.x = (1 - t) * v1.x + (t * v2.x);
+	result.y = (1 - t) * v1.y + (t * v2.y);
+	result.z = (1 - t) * v1.z + (t * v2.z);
+	return result;
+}
 
 /// Matrix4x4関連の関数
 
@@ -406,9 +413,12 @@ inline Matrix4x4 MakeViewportMatrix(float left, float top, float width, float he
 
 ///描画系
 
+Vector3 PositionToScreen(const Vector3& pos, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
+
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawSegment(const Segment& segment, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+void DrawBezier(const Vector3& controlPoint0, const Vector3& controlPoint1, const Vector3& controlPoint2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);

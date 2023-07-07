@@ -126,6 +126,15 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	return result;
 }
 
+Vector3 PositionToScreen(const Vector3& pos, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix)
+{
+
+	Vector3 ncdPos = Transform(pos, viewProjectionMatrix);
+	Vector3 screenPos = Transform(ncdPos, viewportMatrix);
+	return screenPos;
+
+}
+
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix)
 {
 	const float kGridHalfWidth = 2.0f;
@@ -300,4 +309,52 @@ void DrawAABB(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Mat
 	Novice::DrawLine((int)screenVertices[1].x, (int)screenVertices[1].y, (int)screenVertices[5].x, (int)screenVertices[5].y, color);
 	Novice::DrawLine((int)screenVertices[2].x, (int)screenVertices[2].y, (int)screenVertices[6].x, (int)screenVertices[6].y, color);
 	Novice::DrawLine((int)screenVertices[3].x, (int)screenVertices[3].y, (int)screenVertices[7].x, (int)screenVertices[7].y, color);
+}
+
+void DrawBezier(const Vector3& controlPoint0, const Vector3& controlPoint1, const Vector3& controlPoint2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	int division = 36;
+	float t = 0;
+	float segmentStep = 1.0f / (float)division;
+	
+	for (int i = 0; i < division; i++) {
+
+		Vector3 p01 = Lerp(controlPoint0, controlPoint1,t);
+		Vector3 p12 = Lerp(controlPoint1, controlPoint2, t);
+		Vector3 start = Lerp(p01, p12, t);
+		Vector3 eP01 = Lerp(controlPoint0, controlPoint1, t + segmentStep);
+		Vector3 eP12 = Lerp(controlPoint1, controlPoint2, t + segmentStep);
+		Vector3 end = Lerp(eP01, eP12, t + segmentStep);
+		
+		Vector3 ncdStart = Transform(start, viewProjectionMatrix);
+		Vector3 ncdEnd = Transform(end, viewProjectionMatrix);
+		Vector3 screenStart = Transform(ncdStart, viewportMatrix);
+		Vector3 screenEnd = Transform(ncdEnd, viewportMatrix);
+
+		Novice::DrawLine((int)screenStart.x, (int)screenStart.y, (int)screenEnd.x, (int)screenEnd.y, color);
+
+		t += segmentStep;
+
+	}
+
+	Vector3 screenCP0 = PositionToScreen(controlPoint0, viewProjectionMatrix, viewportMatrix);
+	Vector3 screenCP1 = PositionToScreen(controlPoint1, viewProjectionMatrix, viewportMatrix);
+	Vector3 screenCP2 = PositionToScreen(controlPoint2, viewProjectionMatrix, viewportMatrix);
+
+	Sphere sphere0 = {
+		{controlPoint0},0.1f,
+	};
+
+	Sphere sphere1 = {
+		{controlPoint1},0.1f,
+	};
+
+	Sphere sphere2 = {
+		{controlPoint2},0.1f,
+	};
+
+	DrawSphere(sphere0, viewProjectionMatrix, viewportMatrix, BLACK);
+	DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, BLACK);
+	DrawSphere(sphere2, viewProjectionMatrix, viewportMatrix, BLACK);
+
 }
