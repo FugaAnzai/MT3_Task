@@ -68,11 +68,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("translation2", &translation[2].x, 0.01f, -10, 10);
 		ImGui::End();
 
-		Vector3 shoulder = translation[0];
-		Matrix4x4 shoulderMatrix = MakeAffineMatrix(Vector3{ scale[0] }, Vector3{ rotation[0] }, translation[0]);
-		Vector3 elbow = translation[1] * shoulderMatrix;
-		Matrix4x4 elbowMatrix = MakeAffineMatrix(Vector3{ scale[1] }, Vector3{ rotation[1] }, elbow);
-		Vector3 hand = translation[2] * elbowMatrix;
+		Vector3 shoulder = Vector3{};
+		Vector3 elbow = Vector3{};
+		Vector3 hand = Vector3{};
+		Matrix4x4 shoulderMatrix = MakeAffineMatrix(scale[0], rotation[0], translation[0]);
+		shoulder = shoulder * shoulderMatrix;
+		Matrix4x4 elbowMatrix = MakeAffineMatrix(scale[1], rotation[1], translation[1]);
+		elbow = elbow * elbowMatrix * shoulderMatrix;
+		Matrix4x4 handMatrix = MakeAffineMatrix(scale[2], rotation[2], translation[2]);
+		hand = hand * handMatrix * elbowMatrix * shoulderMatrix;
 
 		Sphere sphere0 = { {shoulder},0.3f, };
 		Sphere sphere1 = { {elbow},0.3f, };

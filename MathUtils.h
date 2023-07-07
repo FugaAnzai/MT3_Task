@@ -259,6 +259,12 @@ inline Matrix4x4 Transpose(const Matrix4x4& m) {
 	return result;
 
 }
+inline Matrix4x4 operator*(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
+	return {
+		Multiply(matrix1,matrix2)
+	};
+
+}
 inline Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	Matrix4x4 result = MakeIdentity4x4();
 	
