@@ -14,20 +14,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Vector3 scale[3] = {
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f},
-	};
-
-	Vector3 rotation[3] = {
-	};
-
-	Vector3 translation[3] = {
-		{-0.8f,0.58f,1.0f},
-		{1.76f,1.0f,-0.3f},
-		{0.94f,-0.7f,2.3f},
-	};
+	Vector3 a{ 0.2f,1.0f,0.0f };
+	Vector3 b{ 2.4f,3.1f,1.2f };
+	Vector3 c = a + b;
+	Vector3 d = a - b;
+	Vector3 e = a * 2.4f;
+	Vector3 rotate{ 0.4f,1.43f,-0.8f };
+	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
+	Matrix4x4 rotateMatrix = rotateXMatrix * rotateYMatrix * rotateZMatrix;
 
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
@@ -56,35 +52,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("rotation", &cameraRotation.x, 0.01f,(float) - M_PI, (float)M_PI);
 		ImGui::End();
 
-		ImGui::Begin("ControlPoint");
-		ImGui::DragFloat3("scale0", &scale[0].x, 0.01f, -10, 10);
-		ImGui::DragFloat3("scale1", &scale[1].x, 0.01f, -10, 10);
-		ImGui::DragFloat3("scale2", &scale[2].x, 0.01f, -10, 10);
-		ImGui::DragFloat3("rotation0", &rotation[0].x, 0.01f, -10, 10);
-		ImGui::DragFloat3("rotation1", &rotation[1].x, 0.01f, -10, 10);
-		ImGui::DragFloat3("rotation2", &rotation[2].x, 0.01f, -10, 10);
-		ImGui::DragFloat3("translation0", &translation[0].x, 0.01f, -10, 10);
-		ImGui::DragFloat3("translation1", &translation[1].x, 0.01f, -10, 10);
-		ImGui::DragFloat3("translation2", &translation[2].x, 0.01f, -10, 10);
+		ImGui::Begin("Window");
+		ImGui::Text("c:%f,%f,%f", c.x, c.y, c.z);
+		ImGui::Text("d:%f,%f,%f", d.x, d.y, d.z);
+		ImGui::Text("e:%f,%f,%f", e.x, e.y, e.z);
+		ImGui::Text("matrix:\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n",
+			rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3],
+			rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3], 
+			rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3], 
+			rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3] );
+
 		ImGui::End();
-
-		Vector3 shoulder = Vector3{};
-		Vector3 elbow = Vector3{};
-		Vector3 hand = Vector3{};
-		Matrix4x4 shoulderMatrix = MakeAffineMatrix(scale[0], rotation[0], translation[0]);
-		shoulder = shoulder * shoulderMatrix;
-		Matrix4x4 elbowMatrix = MakeAffineMatrix(scale[1], rotation[1], translation[1]);
-		elbow = elbow * elbowMatrix * shoulderMatrix;
-		Matrix4x4 handMatrix = MakeAffineMatrix(scale[2], rotation[2], translation[2]);
-		hand = hand * handMatrix * elbowMatrix * shoulderMatrix;
-
-		Sphere sphere0 = { {shoulder},0.3f, };
-		Sphere sphere1 = { {elbow},0.3f, };
-		Sphere sphere2 = { {hand},0.3f, };
-
-		Vector3 screenCP0 = PositionToScreen(shoulder, viewProjectionMatrix, viewportMatrix);
-		Vector3 screenCP1 = PositionToScreen(elbow, viewProjectionMatrix, viewportMatrix);
-		Vector3 screenCP2 = PositionToScreen(hand, viewProjectionMatrix, viewportMatrix);
 
 		///
 		/// ↑更新処理ここまで
@@ -95,12 +73,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawSphere(sphere0, viewProjectionMatrix, viewportMatrix,RED);
-		DrawSphere(sphere1, viewProjectionMatrix, viewportMatrix, GREEN);
-		DrawSphere(sphere2, viewProjectionMatrix, viewportMatrix, BLUE);
-
-		Novice::DrawLine((int)screenCP0.x, (int)screenCP0.y, (int)screenCP1.x, (int)screenCP1.y, WHITE);
-		Novice::DrawLine((int)screenCP1.x, (int)screenCP1.y, (int)screenCP2.x, (int)screenCP2.y, WHITE);
 
 		///
 		/// ↑描画処理ここまで

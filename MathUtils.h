@@ -76,6 +76,9 @@ inline Vector3 operator-(const Vector3& v1, const Vector3& v2) {
 inline Vector3 operator*(const float& s, const Vector3& v1) { 
 	return Multiply(s, v1);
 }
+inline Vector3 operator*(const Vector3& v1, const float& s) {
+	return Multiply(s, v1);
+}
 inline Vector3 operator*(const Vector3& v, const Matrix4x4& matrix) {
 	return {
 	    v.x * matrix.m[0][0] + v.y * matrix.m[1][0] + v.z * matrix.m[2][0] + 1 * matrix.m[3][0],
