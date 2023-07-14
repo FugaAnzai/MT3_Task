@@ -5,6 +5,7 @@
 #include "WinApp.h"
 #include "ImGuiManager.h"
 #include "Collision.h"
+#include "PhysicsUtils.h"
 
 const char kWindowTitle[] = "LD2A_01_アンザイフウガ";
 
@@ -14,16 +15,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Vector3 a{ 0.2f,1.0f,0.0f };
-	Vector3 b{ 2.4f,3.1f,1.2f };
-	Vector3 c = a + b;
-	Vector3 d = a - b;
-	Vector3 e = a * 2.4f;
-	Vector3 rotate{ 0.4f,1.43f,-0.8f };
-	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
-	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
-	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
-	Matrix4x4 rotateMatrix = rotateXMatrix * rotateYMatrix * rotateZMatrix;
+	Spring spring{};
+	spring.anchor = { 0.0f,0.0f,0.0f };
+	spring.naturalLength = 1.0f;
+	spring.stiffness = 100.0f;
+	spring.damping = 2.0f;
+
+	Ball ball{};
+	ball.position = { 1.2f,0.0f,0.0f };
+	ball.mass = 2.0f;
+	ball.radius = 0.05f;
+	ball.color = BLUE;
 
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
@@ -53,16 +55,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::End();
 
 		ImGui::Begin("Window");
-		ImGui::Text("c:%f,%f,%f", c.x, c.y, c.z);
-		ImGui::Text("d:%f,%f,%f", d.x, d.y, d.z);
-		ImGui::Text("e:%f,%f,%f", e.x, e.y, e.z);
-		ImGui::Text("matrix:\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n",
-			rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3],
-			rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3], 
-			rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3], 
-			rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3] );
-
+		if (ImGui::Button("Start")) {
+			spring.anchor = { 0.0f,0.0f,0.0f };
+			spring.naturalLength = 1.0f;
+			spring.stiffness = 100.0f;
+			spring.damping = 2.0f;
+			ball.position = { 1.2f,0.0f,0.0f };
+		}
 		ImGui::End();
+
+		SpringSimulation(spring, ball);
+
+		Vector3 screenAnchor = PositionToScreen(spring.anchor,viewProjectionMatrix,viewportMatrix);
+		Vector3 screenBallPosition = PositionToScreen(ball.position, viewProjectionMatrix, viewportMatrix);
+
+		Sphere ballSphere{};
+		ballSphere.center = ball.position;
+		ballSphere.radius = 0.1f;
 
 		///
 		/// ↑更新処理ここまで
@@ -73,6 +82,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
+		Novice::DrawLine((int)screenAnchor.x, (int)screenAnchor.y, (int)screenBallPosition.x, (int)screenBallPosition.y, WHITE);
+		DrawSphere(ballSphere, viewProjectionMatrix, viewportMatrix,ball.color);
 
 		///
 		/// ↑描画処理ここまで
