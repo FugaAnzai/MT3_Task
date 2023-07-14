@@ -1,6 +1,11 @@
 #pragma once
 #include "MathUtils.h"
 
+namespace PhysicsUtils {
+	const float deltaTime = 1.0f / 60.0f;
+	const Vector3 kGravity = { 0.0f,-9.8f,0.0f };
+};
+
 struct Ball
 {
 	Vector3 position;
@@ -19,5 +24,6 @@ struct Spring {
 	float damping;//減衰係数
 };
 
+void GravitySimulation(Ball& ball);
 void SpringSimulation(const Spring& spring,Ball& ball);
 

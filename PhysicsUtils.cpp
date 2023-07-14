@@ -1,8 +1,13 @@
 #include "PhysicsUtils.h"
 
+void GravitySimulation(Ball& ball)
+{
+	ball.velocity += PhysicsUtils::kGravity * PhysicsUtils::deltaTime;
+
+}
+
 void SpringSimulation(const Spring& spring, Ball& ball)
 {
-	float deltaTime = 1.0f / 60.0f;
 
 	Vector3 diff = ball.position - spring.anchor;
 	float length = Length(diff);
@@ -16,8 +21,10 @@ void SpringSimulation(const Spring& spring, Ball& ball)
 		ball.acceleration = force * (1 / ball.mass);
 	}
 
-	ball.velocity += ball.acceleration * deltaTime;
-	ball.position += ball.velocity * deltaTime;
+	GravitySimulation(ball);
+
+	ball.velocity += ball.acceleration * PhysicsUtils::deltaTime;
+	ball.position += ball.velocity * PhysicsUtils::deltaTime;
 
 
 
