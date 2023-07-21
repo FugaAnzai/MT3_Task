@@ -51,3 +51,16 @@ void PendulumSimulation(Pendulum& pendulum, Ball& ball)
 	ball.position.z = pendulum.anchor.z;
 
 }
+
+void ConicalPendulumSimulation(ConicalPendulum& conicalPendulum, Ball& ball)
+{
+	conicalPendulum.angularVelocity = std::sqrt(9.8f / (conicalPendulum.length * std::cos(conicalPendulum.halfApexAngle)));
+	conicalPendulum.angle += conicalPendulum.angularVelocity * PhysicsUtils::deltaTime;
+	float radius = std::sin(conicalPendulum.halfApexAngle) * conicalPendulum.length;
+	float height = std::cos(conicalPendulum.halfApexAngle) * conicalPendulum.length;
+	ball.position.x = conicalPendulum.anchor.x + std::cos(conicalPendulum.angle) * radius;
+	ball.position.y = conicalPendulum.anchor.y - height;
+	ball.position.z = conicalPendulum.anchor.z - std::sin(conicalPendulum.angle) * radius;
+
+
+}

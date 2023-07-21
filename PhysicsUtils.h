@@ -32,7 +32,19 @@ struct Pendulum {
 	float angularAcceleration;
 };
 
+struct ConicalPendulum {
+	Vector3 anchor;
+	float length;
+	float halfApexAngle;
+	float angle;
+	float angularVelocity;
+};
+
 void GravitySimulation(Ball& ball);
 void SpringSimulation(const Spring& spring,Ball& ball);
 void CircleMotionSimulation(const float& angularVelocity, const float& radius, const Vector3& center, float& angle, Ball& ball);
 void PendulumSimulation(Pendulum& pendulum, Ball& ball);
+void ConicalPendulumSimulation(ConicalPendulum& conicalPendulum, Ball& ball);
+
+
+

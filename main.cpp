@@ -15,12 +15,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Pendulum pendulum;
-	pendulum.anchor = { 0.0f,1.0f,0.0f };
-	pendulum.length = 0.8f;
-	pendulum.angle = 0.7f;
-	pendulum.angularVelocity = 0.0f;
-	pendulum.angularAcceleration = 0.0f;
+	ConicalPendulum conicalPendulum;
+	conicalPendulum.anchor = { 0.0f,1.0f,0.0f };
+	conicalPendulum.length = 0.8f;
+	conicalPendulum.halfApexAngle = 0.7f;
+	conicalPendulum.angle = 0.0f;
+	conicalPendulum.angularVelocity = 0.0f;
 
 	Ball ball{};
 	ball.position = { 5.8f,2.2f,0.0f };
@@ -58,11 +58,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		ImGuiIO io = ImGui::GetIO();
 		if (ImGui::Button("Start")) {
-			pendulum.anchor = { 0.0f,1.0f,0.0f };
-			pendulum.length = 0.8f;
-			pendulum.angle = 0.7f;
-			pendulum.angularVelocity = 0.0f;
-			pendulum.angularAcceleration = 0.0f;
+			conicalPendulum.anchor = { 0.0f,1.0f,0.0f };
+			conicalPendulum.length = 0.8f;
+			conicalPendulum.halfApexAngle = 0.7f;
+			conicalPendulum.angle = 0.0f;
+			conicalPendulum.angularVelocity = 0.0f;
 			ball.position = { 5.8f,2.2f,0.0f };
 			ball.mass = 2.0f;
 			ball.radius = 0.05f;
@@ -73,10 +73,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		ImGui::End();
 
-		PendulumSimulation(pendulum, ball);
+		ConicalPendulumSimulation(conicalPendulum, ball);
 
 		Vector3 screenBallPos = PositionToScreen(ball.position, viewProjectionMatrix, viewportMatrix);
-		Vector3 screenPendulumPos = PositionToScreen(pendulum.anchor, viewProjectionMatrix, viewportMatrix);
+		Vector3 screenPendulumPos = PositionToScreen(conicalPendulum.anchor, viewProjectionMatrix, viewportMatrix);
 
 		Sphere ballSphere{};
 		ballSphere.center = ball.position;
