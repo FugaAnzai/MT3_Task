@@ -69,7 +69,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ball.color = BLUE;
 
 		}
-		ImGui::Text("%f", io.Framerate);
 
 		ImGui::End();
 
