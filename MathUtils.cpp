@@ -173,7 +173,7 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
 {
-	const uint32_t kSubdivision = 20;
+	const uint32_t kSubdivision = 16;
 	const float kLonEvery = (360 / kSubdivision) * ((float)M_PI / 180);
 	const float kLatEvery = (360 / kSubdivision) * ((float)M_PI / 180);
 

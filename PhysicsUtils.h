@@ -26,4 +26,5 @@ struct Spring {
 
 void GravitySimulation(Ball& ball);
 void SpringSimulation(const Spring& spring,Ball& ball);
+void CircleMotionSimulation(const float& angularVelocity, const float& radius, const Vector3& center, float& angle, Ball& ball);
 

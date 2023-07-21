@@ -15,14 +15,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Spring spring{};
-	spring.anchor = { 0.0f,1.0f,0.0f };
-	spring.naturalLength = 0.7f;
-	spring.stiffness = 100.0f;
-	spring.damping = 2.0f;
+	Vector3 center = { 0,0,0 };
+	float angle = 0;
 
 	Ball ball{};
-	ball.position = { 0.8f,0.2f,0.0f };
+	ball.position = { 5.8f,2.2f,0.0f };
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
 	ball.color = BLUE;
@@ -55,19 +52,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::End();
 
 		ImGui::Begin("Window");
+		ImGuiIO io = ImGui::GetIO();
 		if (ImGui::Button("Start")) {
-			spring.anchor = { 0.0f,0.0f,0.0f };
-			spring.naturalLength = 1.0f;
-			spring.stiffness = 100.0f;
-			spring.damping = 2.0f;
-			ball.position = { 1.2f,0.0f,0.0f };
+
 		}
+		ImGui::Text("%f", io.Framerate);
+
 		ImGui::End();
 
-		SpringSimulation(spring, ball);
-
-		Vector3 screenAnchor = PositionToScreen(spring.anchor,viewProjectionMatrix,viewportMatrix);
-		Vector3 screenBallPosition = PositionToScreen(ball.position, viewProjectionMatrix, viewportMatrix);
+		CircleMotionSimulation(3.14f, 0.8f, center, angle, ball);
 
 		Sphere ballSphere{};
 		ballSphere.center = ball.position;
@@ -82,7 +75,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		Novice::DrawLine((int)screenAnchor.x, (int)screenAnchor.y, (int)screenBallPosition.x, (int)screenBallPosition.y, WHITE);
 		DrawSphere(ballSphere, viewProjectionMatrix, viewportMatrix,ball.color);
 
 		///

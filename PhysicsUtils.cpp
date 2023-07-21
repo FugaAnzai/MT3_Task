@@ -29,3 +29,13 @@ void SpringSimulation(const Spring& spring, Ball& ball)
 
 
 }
+
+void CircleMotionSimulation(const float& angularVelocity, const float& radius, const Vector3& center, float& angle, Ball& ball)
+{
+	angle += angularVelocity * PhysicsUtils::deltaTime;
+
+	ball.position.x = center.x + cosf(angle) * radius;
+	ball.position.y = center.y + sinf(angle) * radius;
+	ball.position.z = center.z;
+
+}
