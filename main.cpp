@@ -15,8 +15,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Vector3 center = { 0,0,0 };
-	float angle = 0;
+	Pendulum pendulum;
+	pendulum.anchor = { 0.0f,1.0f,0.0f };
+	pendulum.length = 0.8f;
+	pendulum.angle = 0.7f;
+	pendulum.angularVelocity = 0.0f;
+	pendulum.angularAcceleration = 0.0f;
 
 	Ball ball{};
 	ball.position = { 5.8f,2.2f,0.0f };
@@ -54,13 +58,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		ImGuiIO io = ImGui::GetIO();
 		if (ImGui::Button("Start")) {
+			pendulum.anchor = { 0.0f,1.0f,0.0f };
+			pendulum.length = 0.8f;
+			pendulum.angle = 0.7f;
+			pendulum.angularVelocity = 0.0f;
+			pendulum.angularAcceleration = 0.0f;
+			ball.position = { 5.8f,2.2f,0.0f };
+			ball.mass = 2.0f;
+			ball.radius = 0.05f;
+			ball.color = BLUE;
 
 		}
 		ImGui::Text("%f", io.Framerate);
 
 		ImGui::End();
 
-		CircleMotionSimulation(3.14f, 0.8f, center, angle, ball);
+		PendulumSimulation(pendulum, ball);
+
+		Vector3 screenBallPos = PositionToScreen(ball.position, viewProjectionMatrix, viewportMatrix);
+		Vector3 screenPendulumPos = PositionToScreen(pendulum.anchor, viewProjectionMatrix, viewportMatrix);
 
 		Sphere ballSphere{};
 		ballSphere.center = ball.position;
@@ -75,6 +91,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
+		Novice::DrawLine((int)screenPendulumPos.x, (int)screenPendulumPos.y, (int)screenBallPos.x, (int)screenBallPos.y, WHITE);
 		DrawSphere(ballSphere, viewProjectionMatrix, viewportMatrix,ball.color);
 
 		///

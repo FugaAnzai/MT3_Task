@@ -24,7 +24,15 @@ struct Spring {
 	float damping;//減衰係数
 };
 
+struct Pendulum {
+	Vector3 anchor;
+	float length;
+	float angle;
+	float angularVelocity;
+	float angularAcceleration;
+};
+
 void GravitySimulation(Ball& ball);
 void SpringSimulation(const Spring& spring,Ball& ball);
 void CircleMotionSimulation(const float& angularVelocity, const float& radius, const Vector3& center, float& angle, Ball& ball);
-
+void PendulumSimulation(Pendulum& pendulum, Ball& ball);

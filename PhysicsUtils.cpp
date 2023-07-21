@@ -39,3 +39,15 @@ void CircleMotionSimulation(const float& angularVelocity, const float& radius, c
 	ball.position.z = center.z;
 
 }
+
+void PendulumSimulation(Pendulum& pendulum, Ball& ball)
+{
+	pendulum.angularAcceleration = -(9.8f / pendulum.length) * std::sin(pendulum.angle);
+	pendulum.angularVelocity += pendulum.angularAcceleration * PhysicsUtils::deltaTime;
+	pendulum.angle += pendulum.angularVelocity * PhysicsUtils::deltaTime;
+
+	ball.position.x = pendulum.anchor.x + std::sin(pendulum.angle) * pendulum.length;
+	ball.position.y = pendulum.anchor.y - std::cos(pendulum.angle) * pendulum.length;
+	ball.position.z = pendulum.anchor.z;
+
+}
