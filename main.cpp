@@ -15,18 +15,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	ConicalPendulum conicalPendulum;
-	conicalPendulum.anchor = { 0.0f,1.0f,0.0f };
-	conicalPendulum.length = 0.8f;
-	conicalPendulum.halfApexAngle = 0.7f;
-	conicalPendulum.angle = 0.0f;
-	conicalPendulum.angularVelocity = 0.0f;
+	Plane plane;
+	plane.normal = Normalize(Vector3{ -0.2f,0.9f,-0.3f });
+	plane.distance = 0.0f;
 
 	Ball ball{};
-	ball.position = { 5.8f,2.2f,0.0f };
+	ball.position = { 0.8f,1.2f,0.3f };
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
-	ball.color = BLUE;
+	ball.color = WHITE;
 
 	Vector3 cameraPosition{ 0.0f,1.0f,-5.0f };
 	Vector3 cameraRotation{};
@@ -58,28 +55,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		ImGuiIO io = ImGui::GetIO();
 		if (ImGui::Button("Start")) {
-			conicalPendulum.anchor = { 0.0f,1.0f,0.0f };
-			conicalPendulum.length = 0.8f;
-			conicalPendulum.halfApexAngle = 0.7f;
-			conicalPendulum.angle = 0.0f;
-			conicalPendulum.angularVelocity = 0.0f;
-			ball.position = { 5.8f,2.2f,0.0f };
+			ball.position = { 0.8f,1.2f,0.3f };
 			ball.mass = 2.0f;
 			ball.radius = 0.05f;
-			ball.color = BLUE;
-
+			ball.color = WHITE;
 		}
 
 		ImGui::End();
 
-		ConicalPendulumSimulation(conicalPendulum, ball);
+		GravitySimulation(ball);
 
-		Vector3 screenBallPos = PositionToScreen(ball.position, viewProjectionMatrix, viewportMatrix);
-		Vector3 screenPendulumPos = PositionToScreen(conicalPendulum.anchor, viewProjectionMatrix, viewportMatrix);
+		ball.position += ball.velocity * PhysicsUtils::deltaTime;
 
-		Sphere ballSphere{};
-		ballSphere.center = ball.position;
-		ballSphere.radius = 0.1f;
+		if (IsCollision(Sphere{ ball.position,ball.radius }, plane)) {
+			ball.velocity = 0.8f * Reflect(ball.velocity, plane.normal);
+		}
 
 		///
 		/// ↑更新処理ここまで
@@ -90,8 +80,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		Novice::DrawLine((int)screenPendulumPos.x, (int)screenPendulumPos.y, (int)screenBallPos.x, (int)screenBallPos.y, WHITE);
-		DrawSphere(ballSphere, viewProjectionMatrix, viewportMatrix,ball.color);
+		DrawPlane(plane, viewProjectionMatrix, viewportMatrix, WHITE);
+		DrawSphere(Sphere{ ball.position,ball.radius }, viewProjectionMatrix, viewportMatrix,ball.color);
 
 		///
 		/// ↑描画処理ここまで

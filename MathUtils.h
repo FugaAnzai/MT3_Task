@@ -146,6 +146,11 @@ inline Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
 	result.z = (1 - t) * v1.z + (t * v2.z);
 	return result;
 }
+inline Vector3 Reflect(const Vector3& input, const Vector3& normal) {
+	Vector3 result;
+	result = input - (2 * (Dot(input, normal) * normal));
+	return result;
+}
 
 /// Matrix4x4関連の関数
 
